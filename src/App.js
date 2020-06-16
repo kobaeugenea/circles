@@ -7,6 +7,7 @@ import ControlPanel from './control/ControlPanel.js'
 import Queue from './Queue.js'
 import 'bootstrap/dist/css/bootstrap.min.css';
 import './App.css';
+import Timer from "./Timer";
 
 const OPENVIDU_SERVER_URL = 'https://' + window.location.hostname + ':4443';
 const OPENVIDU_SERVER_SECRET = 'MY_SECRET';
@@ -26,6 +27,7 @@ class App extends Component {
             speakingQueue: [],
             applicationMode: APPLICATION_MODE.NORMAL,
             roundTime: undefined,
+            secLeftToSpeak: 0,
         };
 
         this.joinSession = this.joinSession.bind(this);
@@ -92,7 +94,7 @@ class App extends Component {
                     if (this.isHost()) {
                         this.state.publisher.stream.session.signal({
                             type: this.state.applicationMode === APPLICATION_MODE.NORMAL ? SIGNALS.UPDATE_QUEUE : SIGNALS.UPDATE_ROUND,
-                            data: JSON.stringify({queue: this.state.speakingQueue}),
+                            data: JSON.stringify({queue: this.state.speakingQueue, roundTime: this.state.roundTime}),
                         });
                     }
 
@@ -113,32 +115,24 @@ class App extends Component {
                     // Remove the stream from 'subscribers' array
                     this.deleteSubscriber(event.stream.streamManager);
 
-                    //update queue
-                    if (this.isHost()) {
-                        const userNames = this.getAllUsers().map(subscriber => JSON.parse(subscriber.stream.connection.data).clientData);
-                        let speakingQueue = [];
-                        this.state.speakingQueue.forEach(item => {
-                            let index = userNames.indexOf(item);
-                            if (index > -1) {
-                                speakingQueue.push(item);
-                            }
-                        });
-                        this.setState({
-                            speakingQueue: speakingQueue,
-                        });
-                        this.state.publisher.stream.session.signal({
-                            type: this.state.applicationMode === APPLICATION_MODE.NORMAL ? SIGNALS.UPDATE_QUEUE : SIGNALS.UPDATE_ROUND,
-                            data: JSON.stringify({queue: this.state.speakingQueue}),
-                        });
-                    }
+                    const userNames = this.getAllUsers().map(subscriber => JSON.parse(subscriber.stream.connection.data).clientData);
+                    let speakingQueue = [];
+                    this.state.speakingQueue.forEach(item => {
+                        let index = userNames.indexOf(item);
+                        if (index > -1) {
+                            speakingQueue.push(item);
+                        }
+                    });
+                    this.setState({
+                        speakingQueue: speakingQueue,
+                    });
                 });
 
                 mySession.on('signal', (event) => {
-                    clearTimeout(this.timerId);
-
                     const data = JSON.parse(event.data);
                     let mainStreamManager;
                     let applicationMode;
+                    let secLeftToSpeak = 0;
 
                     if (data.queue.length !== 0) {
                         const speaksNow = data.queue[0];
@@ -149,15 +143,32 @@ class App extends Component {
                         applicationMode = APPLICATION_MODE.NORMAL;
                     } else {
                         applicationMode = APPLICATION_MODE.ROUND;
-                        if (data.roundTime > -1) {
-                            this.timerId = setTimeout(() => {
-                                const speakingQueue = data.queue;
-                                speakingQueue.shift();
-                                this.state.publisher.stream.session.signal({
-                                    type: SIGNALS.UPDATE_ROUND,
-                                    data: JSON.stringify({queue: speakingQueue, roundTime: data.roundTime}),
+                        //this user isn't speaker
+                        if (data.queue[0] !== App.getUserName(this.state.publisher)) {
+                            clearInterval(this.timerId);
+                            secLeftToSpeak = 0;
+                        //this user just starts to speak
+                        } else if (data.roundTime > -1 && this.state.speakingQueue.toString() !== data.queue.toString()) {
+                            secLeftToSpeak = data.roundTime * 60;
+                            clearInterval(this.timerId);
+                            this.timerId = setInterval(() => {
+                                let secLeftToSpeak = this.state.secLeftToSpeak - 1;
+                                this.setState({
+                                    secLeftToSpeak: secLeftToSpeak,
                                 });
-                            }, data.roundTime * 60 * 1000);
+                                if (secLeftToSpeak < 1) {
+                                    const speakingQueue = this.state.speakingQueue;
+                                    speakingQueue.shift();
+                                    clearInterval(this.timerId);
+                                    this.state.publisher.stream.session.signal({
+                                        type: SIGNALS.UPDATE_ROUND,
+                                        data: JSON.stringify({queue: speakingQueue, roundTime: data.roundTime}),
+                                    });
+                                }
+                            }, 1000);
+                        //this user continue speak
+                        } else {
+                            secLeftToSpeak = this.state.secLeftToSpeak;
                         }
                     }
 
@@ -166,6 +177,7 @@ class App extends Component {
                         mainStreamManager: mainStreamManager,
                         applicationMode: applicationMode,
                         roundTime: data.roundTime,
+                        secLeftToSpeak: secLeftToSpeak,
                     });
                 });
 
@@ -295,7 +307,7 @@ class App extends Component {
                     </div>
                 ) : null}
 
-                {this.state.session !== undefined ? (
+                {this.state.publisher !== undefined && this.state.publisher.stream !== undefined ? (
                     <div id="session">
                         <ControlPanel leaveSession={() => this.leaveSession()}
                                       userStream={this.state.publisher}
@@ -303,8 +315,10 @@ class App extends Component {
                                       speakingQueue={this.state.speakingQueue}
                                       applicationMode={this.state.applicationMode}
                                       allUsers={this.getAllUsers()}
-                                      roundTime={this.state.roundTime}/>
+                                      roundTime={this.state.roundTime}
+                                      resetRoundTimerFunction={() => this.resetRoundTimer()}/>
                         <Queue queue={this.state.speakingQueue} streamManager={this.state.mainStreamManager}/>
+                        {this.state.secLeftToSpeak > 0 ? <Timer secLeftToSpeak={this.state.secLeftToSpeak}/> : null}
                         <div id="session-header">
                             <h1 id="session-title">{mySessionId}</h1>
                         </div>
