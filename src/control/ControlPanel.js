@@ -18,7 +18,7 @@ export default class ControlPanel extends Component {
     }
 
     render() {
-        if(this.props.applicationMode === APPLICATION_MODE.ROUND) {
+        if (this.props.applicationMode === APPLICATION_MODE.ROUND) {
             this.state.view = APPLICATION_MODE.ROUND;
         }
         return <div className='controlPanel'>
@@ -54,7 +54,8 @@ export default class ControlPanel extends Component {
                 : <RoundModePanel applicationMode={this.props.applicationMode}
                                   allUsers={this.props.allUsers}
                                   speakingQueue={this.props.speakingQueue}
-                                  userStream={this.props.userStream}/>}
+                                  userStream={this.props.userStream}
+                                  roundTime={this.props.roundTime}/>}
         </div>;
     }
 

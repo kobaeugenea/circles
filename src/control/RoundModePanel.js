@@ -23,6 +23,9 @@ export default class RoundModePanel extends Component {
     }
 
     render() {
+        if (this.props.applicationMode === APPLICATION_MODE.ROUND) {
+            this.state.roundTime = this.props.roundTime;
+        }
         return <div className='roundModePanel'>
             <Button variant="success"
                     onClick={this.queueControlHandler}>{QUEUE_CONTROL_STRINGS.get(this.getUserMode())}</Button>
@@ -35,6 +38,7 @@ export default class RoundModePanel extends Component {
                         type="radio"
                         variant="secondary"
                         name="radio"
+                        disabled={this.props.applicationMode === APPLICATION_MODE.ROUND && this.state.roundTime !== radio.value}
                         value={radio.value}
                         checked={this.state.roundTime === radio.value}
                         onChange={(e) => this.setState({roundTime: e.currentTarget.value})}
@@ -69,7 +73,7 @@ export default class RoundModePanel extends Component {
         }
         this.props.userStream.stream.session.signal({
             type: SIGNALS.UPDATE_ROUND,
-            data: JSON.stringify({queue: speakingQueue, time: this.state.roundTime}),
+            data: JSON.stringify({queue: speakingQueue, roundTime: this.state.roundTime}),
         });
     }
 

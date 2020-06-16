@@ -91,8 +91,8 @@ class App extends Component {
                     //send speaking queue if we are host
                     if (this.isHost()) {
                         this.state.publisher.stream.session.signal({
-                            type: SIGNALS.UPDATE_QUEUE,
-                            data: JSON.stringify(this.state.speakingQueue),
+                            type: this.state.applicationMode === APPLICATION_MODE.NORMAL ? SIGNALS.UPDATE_QUEUE : SIGNALS.UPDATE_ROUND,
+                            data: JSON.stringify({queue: this.state.speakingQueue}),
                         });
                     }
 
@@ -127,25 +127,44 @@ class App extends Component {
                             speakingQueue: speakingQueue,
                         });
                         this.state.publisher.stream.session.signal({
-                            type: SIGNALS.UPDATE_QUEUE,
-                            data: JSON.stringify(this.state.speakingQueue),
+                            type: this.state.applicationMode === APPLICATION_MODE.NORMAL ? SIGNALS.UPDATE_QUEUE : SIGNALS.UPDATE_ROUND,
+                            data: JSON.stringify({queue: this.state.speakingQueue}),
                         });
                     }
                 });
 
                 mySession.on('signal', (event) => {
+                    clearTimeout(this.timerId);
+
                     const data = JSON.parse(event.data);
                     let mainStreamManager;
+                    let applicationMode;
+
                     if (data.queue.length !== 0) {
                         const speaksNow = data.queue[0];
                         mainStreamManager = this.getAllUsers().filter(el => App.getUserName(el) === speaksNow)[0];
                     }
+
+                    if (event.type === 'signal:' + SIGNALS.UPDATE_QUEUE || data.queue.length === 0) {
+                        applicationMode = APPLICATION_MODE.NORMAL;
+                    } else {
+                        applicationMode = APPLICATION_MODE.ROUND;
+                        if (data.roundTime > -1) {
+                            this.timerId = setTimeout(() => {
+                                const speakingQueue = data.queue;
+                                speakingQueue.shift();
+                                this.state.publisher.stream.session.signal({
+                                    type: SIGNALS.UPDATE_ROUND,
+                                    data: JSON.stringify({queue: speakingQueue, roundTime: data.roundTime}),
+                                });
+                            }, data.roundTime * 60 * 1000);
+                        }
+                    }
+
                     this.setState({
                         speakingQueue: data.queue,
                         mainStreamManager: mainStreamManager,
-                        applicationMode: event.type === 'signal:' + SIGNALS.UPDATE_QUEUE || data.queue.length === 0
-                            ? APPLICATION_MODE.NORMAL
-                            : APPLICATION_MODE.ROUND,
+                        applicationMode: applicationMode,
                         roundTime: data.roundTime,
                     });
                 });
@@ -283,7 +302,8 @@ class App extends Component {
                                       mainStream={this.state.mainStreamManager}
                                       speakingQueue={this.state.speakingQueue}
                                       applicationMode={this.state.applicationMode}
-                                      allUsers={this.getAllUsers()}/>
+                                      allUsers={this.getAllUsers()}
+                                      roundTime={this.state.roundTime}/>
                         <Queue queue={this.state.speakingQueue} streamManager={this.state.mainStreamManager}/>
                         <div id="session-header">
                             <h1 id="session-title">{mySessionId}</h1>
