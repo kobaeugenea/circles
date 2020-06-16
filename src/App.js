@@ -2,8 +2,8 @@ import axios from 'axios';
 import {OpenVidu} from 'openvidu-browser';
 import React, {Component} from 'react';
 import UserVideoComponent from './UserVideoComponent';
-import {SIGNALS} from './enums/settings.js'
-import ControlPanel from './ControlPanel.js'
+import {SIGNALS, APPLICATION_MODE} from './enums/settings.js'
+import ControlPanel from './control/ControlPanel.js'
 import Queue from './Queue.js'
 import 'bootstrap/dist/css/bootstrap.min.css';
 import './App.css';
@@ -24,6 +24,8 @@ class App extends Component {
             publisher: undefined,
             subscribers: [],
             speakingQueue: [],
+            applicationMode: APPLICATION_MODE.NORMAL,
+            roundTime: undefined,
         };
 
         this.joinSession = this.joinSession.bind(this);
@@ -131,16 +133,20 @@ class App extends Component {
                     }
                 });
 
-                mySession.on('signal:' + SIGNALS.UPDATE_QUEUE, (event) => {
-                    const speakingQueue = JSON.parse(event.data);
+                mySession.on('signal', (event) => {
+                    const data = JSON.parse(event.data);
                     let mainStreamManager;
-                    if(speakingQueue.length !== 0){
-                        const speaksNow = speakingQueue[0];
+                    if (data.queue.length !== 0) {
+                        const speaksNow = data.queue[0];
                         mainStreamManager = this.getAllUsers().filter(el => App.getUserName(el) === speaksNow)[0];
                     }
                     this.setState({
-                        speakingQueue: speakingQueue,
+                        speakingQueue: data.queue,
                         mainStreamManager: mainStreamManager,
+                        applicationMode: event.type === 'signal:' + SIGNALS.UPDATE_QUEUE || data.queue.length === 0
+                            ? APPLICATION_MODE.NORMAL
+                            : APPLICATION_MODE.ROUND,
+                        roundTime: data.roundTime,
                     });
                 });
 
@@ -201,7 +207,7 @@ class App extends Component {
     }
 
     getAllUsers() {
-        return this.state.subscribers.concat([this.state.publisher]);
+        return [this.state.publisher].concat(this.state.subscribers);
     }
 
     leaveSession() {
@@ -275,7 +281,9 @@ class App extends Component {
                         <ControlPanel leaveSession={() => this.leaveSession()}
                                       userStream={this.state.publisher}
                                       mainStream={this.state.mainStreamManager}
-                                      speakingQueue={this.state.speakingQueue}/>
+                                      speakingQueue={this.state.speakingQueue}
+                                      applicationMode={this.state.applicationMode}
+                                      allUsers={this.getAllUsers()}/>
                         <Queue queue={this.state.speakingQueue} streamManager={this.state.mainStreamManager}/>
                         <div id="session-header">
                             <h1 id="session-title">{mySessionId}</h1>
