@@ -14,6 +14,8 @@ Server Installation
 * npm install
 * npm start
 
+Application is configured for standard openvidu ports, should not require any additional configuration.
+
 
 Local testing
 ==
