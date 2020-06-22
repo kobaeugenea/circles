@@ -11,6 +11,7 @@ Server Installation
 * install npm
 * git clone https://github.com/kobaeugenea/circles
 * cd circles
+* ensure that OPENVIDU secret matches that in the openvidu server settings: https://docs.openvidu.io/en/2.14.0/reference-docs/openvidu-server-params/
 * npm install
 * npm start
 
