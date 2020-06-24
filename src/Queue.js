@@ -24,7 +24,7 @@ export default class Queue extends Component {
             <ListGroup className='queueList'>
                 <ListGroup.Item>Speaking queue:</ListGroup.Item>
                 {this.props.queue.map((item, idx) => (
-                    <ListGroup.Item variant={idx === 0 ? 'primary' : 'secondary'}>{item}</ListGroup.Item>
+                    <ListGroup.Item key={idx} variant={idx === 0 ? 'primary' : 'secondary'}>{item}</ListGroup.Item>
                 ))}
             </ListGroup>
         </div>;

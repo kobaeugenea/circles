@@ -345,7 +345,7 @@ class App extends Component {
 
                         <div id="video-container" className="videoContainer">
                             {this.getAllUsers().map((sub, i) => (
-                                <UserVideoComponent
+                                <UserVideoComponent key={i}
                                     streamManager={this.state.mainStreamManager !== sub ? sub : undefined}
                                     tPosition={this.calculatePosition(i)}/>
                             ))}
