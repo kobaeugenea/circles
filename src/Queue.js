@@ -1,25 +1,26 @@
 import React, {Component} from 'react';
 import {ListGroup} from "react-bootstrap";
 import './Queue.css';
-import OpenViduVideoComponent from "./OvVideo";
+import Circle from "./circle/Circle";
 
 export default class Queue extends Component {
 
     render() {
+        const streamPosition = {
+            left: '50%',
+            top: '50%',
+            transform: 'translate(-50%, -50%)',
+            width: 'auto',
+            height: '40%',
+        };
+
+        const streamSize = {
+            width: '100%',
+            height: '100%',
+        };
+
         return <div>
-            {
-                this.props.streamManager !== undefined
-                    ? (<div className='mainVideoContainer videoContainer'>
-                            <p>{JSON.parse(this.props.streamManager.stream.connection.data).clientData}</p>
-                            <div className='mainVideo'>
-                                <OpenViduVideoComponent streamManager={this.props.streamManager}/>
-                            </div>
-                        </div>
-                    )
-                    : (
-                        <img className='emptyCenter' src='resources/images/empty_center.png' alt='Empty center'/>
-                    )
-            }
+            <Circle streamPosition={streamPosition} streamSize={streamSize} streamManager={this.props.streamManager}/>
             <ListGroup className='queueList'>
                 <ListGroup.Item>Speaking queue:</ListGroup.Item>
                 {this.props.queue.map((item, idx) => (

@@ -1,7 +1,7 @@
 import axios from 'axios';
 import {OpenVidu} from 'openvidu-browser';
 import React, {Component} from 'react';
-import UserVideoComponent from './UserVideoComponent';
+import UserVideoComponent from './circle/UserVideoComponent';
 import {SIGNALS, APPLICATION_MODE} from './enums/settings.js'
 import ControlPanel from './control/ControlPanel.js'
 import Queue from './Queue.js'
@@ -147,7 +147,7 @@ class App extends Component {
                         if (data.queue[0] !== App.getUserName(this.state.publisher)) {
                             clearInterval(this.timerId);
                             secLeftToSpeak = 0;
-                        //this user just starts to speak
+                            //this user just starts to speak
                         } else if (data.roundTime > -1 && this.state.speakingQueue.toString() !== data.queue.toString()) {
                             secLeftToSpeak = data.roundTime * 60;
                             clearInterval(this.timerId);
@@ -166,7 +166,7 @@ class App extends Component {
                                     });
                                 }
                             }, 1000);
-                        //this user continue speak
+                            //this user continue speak
                         } else {
                             secLeftToSpeak = this.state.secLeftToSpeak;
                         }
@@ -324,12 +324,9 @@ class App extends Component {
                         </div>
 
                         <div id="video-container" className="videoContainer">
-                            {this.state.publisher !== undefined ? (
-                                <UserVideoComponent streamManager={this.state.publisher}
-                                                    tPosition={this.calculatePosition(0)}/>
-                            ) : null}
-                            {this.state.subscribers.map((sub, i) => (
-                                <UserVideoComponent streamManager={sub} tPosition={this.calculatePosition(i + 1)}/>
+                            {this.getAllUsers().map((sub, i) => (
+                                <UserVideoComponent streamManager={this.state.mainStreamManager !== sub ? sub : undefined}
+                                                    tPosition={this.calculatePosition(i)}/>
                             ))}
                         </div>
                     </div>
