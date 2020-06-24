@@ -8,6 +8,7 @@ import Queue from './Queue.js'
 import 'bootstrap/dist/css/bootstrap.min.css';
 import './App.css';
 import Timer from "./Timer";
+import Devices from "./Devices";
 
 const OPENVIDU_SERVER_URL = 'https://' + window.location.hostname + ':4443';
 const OPENVIDU_SERVER_SECRET = 'MY_SECRET';
@@ -28,13 +29,24 @@ class App extends Component {
             applicationMode: APPLICATION_MODE.NORMAL,
             roundTime: undefined,
             secLeftToSpeak: 0,
+            devices: undefined,
+            camera: undefined,
+            microphone: undefined,
         };
 
         this.joinSession = this.joinSession.bind(this);
         this.leaveSession = this.leaveSession.bind(this);
         this.handleChangeSessionId = this.handleChangeSessionId.bind(this);
         this.handleChangeUserName = this.handleChangeUserName.bind(this);
+        this.handleChangeCamera = this.handleChangeCamera.bind(this);
+        this.handleChangeMicrophone = this.handleChangeMicrophone.bind(this);
         this.onbeforeunload = this.onbeforeunload.bind(this);
+
+        // --- 1) Get an OpenVidu object ---
+        this.OV = new OpenVidu();
+        this.OV.getDevices().then(devices => {
+            this.setState({devices: devices})
+        });
     }
 
     componentDidMount() {
@@ -61,6 +73,18 @@ class App extends Component {
         });
     }
 
+    handleChangeCamera(e) {
+        this.setState({
+            camera: e.target.value,
+        });
+    }
+
+    handleChangeMicrophone(e) {
+        this.setState({
+            microphone: e.target.value,
+        });
+    }
+
     deleteSubscriber(streamManager) {
         let subscribers = this.state.subscribers;
         let index = subscribers.indexOf(streamManager, 0);
@@ -73,10 +97,6 @@ class App extends Component {
     }
 
     joinSession() {
-        // --- 1) Get an OpenVidu object ---
-
-        this.OV = new OpenVidu();
-
         // --- 2) Init a session ---
 
         this.setState(
@@ -200,8 +220,8 @@ class App extends Component {
                             // Init a publisher passing undefined as targetElement (we don't want OpenVidu to insert a video
                             // element: we will manage it on our own) and with the desired properties
                             let publisher = this.OV.initPublisher(undefined, {
-                                audioSource: undefined, // The source of audio. If undefined default microphone
-                                videoSource: undefined, // The source of video. If undefined default webcam
+                                audioSource: this.state.microphone, // The source of audio. If undefined default microphone
+                                videoSource: this.state.camera, // The source of video. If undefined default webcam
                                 publishAudio: true, // Whether you want to start publishing with your audio unmuted or not
                                 publishVideo: true, // Whether you want to start publishing with your video enabled or not
                                 resolution: '640x480', // The resolution of your video
@@ -271,9 +291,6 @@ class App extends Component {
             <div className="container">
                 {this.state.session === undefined ? (
                     <div id="join">
-                        <div id="img-div">
-                            <img src="resources/images/openvidu_grey_bg_transp_cropped.png" alt="OpenVidu logo"/>
-                        </div>
                         <div id="join-dialog" className="jumbotron vertical-center">
                             <h1> Join a video session </h1>
                             <form className="form-group" onSubmit={this.joinSession}>
@@ -299,6 +316,9 @@ class App extends Component {
                                         required
                                     />
                                 </p>
+                                <Devices devices={this.state.devices}
+                                         changeCamera={(e) => this.handleChangeCamera(e)}
+                                         changeMicrophone={(e) => this.handleChangeMicrophone(e)}/>
                                 <p className="text-center">
                                     <input className="btn btn-lg btn-success" name="commit" type="submit" value="JOIN"/>
                                 </p>
@@ -325,8 +345,9 @@ class App extends Component {
 
                         <div id="video-container" className="videoContainer">
                             {this.getAllUsers().map((sub, i) => (
-                                <UserVideoComponent streamManager={this.state.mainStreamManager !== sub ? sub : undefined}
-                                                    tPosition={this.calculatePosition(i)}/>
+                                <UserVideoComponent
+                                    streamManager={this.state.mainStreamManager !== sub ? sub : undefined}
+                                    tPosition={this.calculatePosition(i)}/>
                             ))}
                         </div>
                     </div>

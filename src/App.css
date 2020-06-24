@@ -1,19 +1,23 @@
 .stream-container {
-	padding: 0;
+    padding: 0;
 }
 
 .btn {
-	font-size: 20px;
+    font-size: 20px;
 }
 
 .form-control {
-	font-size: 20px;
+    font-size: 20px;
 }
 
 .list-group-item {
-	font-size: 20px;
+    font-size: 20px;
 }
 
 * {
-	font-family: 'Montserrat', serif;
+    font-family: 'Montserrat', serif;
+}
+
+.form-group label {
+	font-size: 21px;
 }
