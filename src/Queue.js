@@ -5,18 +5,28 @@ import Circle from "./circle/Circle";
 
 export default class Queue extends Component {
 
+    constructor(props) {
+        super(props);
+        this.state = {height: window.innerHeight};
+    }
+
+    componentDidMount() {
+        window.addEventListener('resize', () => this.setState({height: window.innerHeight}));
+    }
+
     render() {
+        const h = this.state.height * 0.4;
+        const w = h * 4 / 3;
+
         const streamPosition = {
             left: '50%',
             top: '50%',
             transform: 'translate(-50%, -50%)',
-            width: 'auto',
-            height: '40%',
         };
 
         const streamSize = {
-            width: '100%',
-            height: '100%',
+            width: w,
+            height: h,
         };
 
         return <div>
