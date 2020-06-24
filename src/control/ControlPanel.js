@@ -17,6 +17,10 @@ export default class ControlPanel extends Component {
         this.state = {view: APPLICATION_MODE.NORMAL};
     }
 
+    shouldComponentUpdate(nextProps, nextState, nextContext) {
+        return this.props.applicationMode !== APPLICATION_MODE.ROUND;
+    }
+
     render() {
         if (this.props.applicationMode === APPLICATION_MODE.ROUND) {
             this.setState({view: APPLICATION_MODE.ROUND});

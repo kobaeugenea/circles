@@ -22,6 +22,10 @@ export default class RoundModePanel extends Component {
         this.queueControlHandler = this.queueControlHandler.bind(this);
     }
 
+    shouldComponentUpdate(nextProps, nextState, nextContext) {
+        return this.props.applicationMode !== APPLICATION_MODE.ROUND;
+    }
+
     render() {
         if (this.props.applicationMode === APPLICATION_MODE.ROUND) {
             this.setState({roundTime: this.props.roundTime});
