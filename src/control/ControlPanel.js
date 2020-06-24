@@ -19,7 +19,7 @@ export default class ControlPanel extends Component {
 
     render() {
         if (this.props.applicationMode === APPLICATION_MODE.ROUND) {
-            this.state.view = APPLICATION_MODE.ROUND;
+            this.setState({view: APPLICATION_MODE.ROUND});
         }
         return <div className='controlPanel'>
             <input

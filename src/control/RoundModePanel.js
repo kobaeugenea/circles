@@ -24,7 +24,7 @@ export default class RoundModePanel extends Component {
 
     render() {
         if (this.props.applicationMode === APPLICATION_MODE.ROUND) {
-            this.state.roundTime = this.props.roundTime;
+            this.setState({roundTime: this.props.roundTime});
         }
         return <div className='roundModePanel'>
             <Button variant="success"
