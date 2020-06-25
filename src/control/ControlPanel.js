@@ -30,22 +30,14 @@ export default class ControlPanel extends Component {
                 value="Leave session"
             />
 
-            <ButtonGroup toggle>
-                {modeButtons.map((radio, idx) => (
-                    <ToggleButton
-                        key={idx}
-                        type="radio"
-                        variant="secondary"
-                        name="radio"
-                        disabled={this.props.applicationMode === APPLICATION_MODE.ROUND && radio.value === APPLICATION_MODE.NORMAL}
-                        value={radio.value}
-                        checked={this.state.view === radio.value}
-                        onChange={(e) => this.setState({view: e.currentTarget.value})}
-                    >
-                        {radio.name}
-                    </ToggleButton>
-                ))}
-            </ButtonGroup>
+            {this.props.applicationMode === APPLICATION_MODE.NORMAL &&
+            <div className={this.state.view === APPLICATION_MODE.NORMAL ? 'changeToRound' : 'changeToNormal'}
+                 onClick={() => {
+                     this.state.view === APPLICATION_MODE.NORMAL
+                         ? this.setState({view: APPLICATION_MODE.ROUND})
+                         : this.setState({view: APPLICATION_MODE.NORMAL});
+                 }}/>
+            }
 
             {this.state.view === APPLICATION_MODE.NORMAL
                 ? <NormalModePanel userStream={this.props.userStream}
@@ -56,6 +48,8 @@ export default class ControlPanel extends Component {
                                   speakingQueue={this.props.speakingQueue}
                                   userStream={this.props.userStream}
                                   roundTime={this.props.roundTime}/>}
+
+            <footer className="footer"/>
         </div>;
     }
 
