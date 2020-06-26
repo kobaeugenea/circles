@@ -8,10 +8,12 @@ export const APPLICATION_MODE = {
     ROUND: "round"
 };
 
-export const USER_MODE_NORMAL = {
-    NORMAL: "normal",
-    IN_QUEUE: "in_queue",
-    SPEAKING: "speaking_normal",
+export const USER_CONTROL_NORMAL = {
+    GET_IN: "get_in",
+    QUEUE_UP: "queue_up",
+    LEAVE_QUEUE: "leave_queue",
+    STOP_SPEAKING: "stop_speaking",
+    STOP_SPEAKING_SOMEONE_WAITING: "stop_speaking_someone_waiting",
 };
 
 export const USER_MODE_ROUND = {

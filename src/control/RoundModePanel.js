@@ -1,6 +1,6 @@
 import React, {Component} from 'react';
 import {SIGNALS, APPLICATION_MODE, USER_MODE_ROUND, ROUND_TIME} from '../enums/settings.js'
-import {QUEUE_CONTROL_STRINGS} from '../enums/strings.js'
+import {QUEUE_CONTROL_CLASSES} from '../enums/classes'
 import {Button, ButtonGroup, ToggleButton} from "react-bootstrap";
 import './RoundModePanel.css';
 import App from "../App";
@@ -28,7 +28,7 @@ export default class RoundModePanel extends Component {
         }
         return <div className='roundModePanel'>
             <Button variant="success"
-                    onClick={this.queueControlHandler}>{QUEUE_CONTROL_STRINGS.get(this.getUserMode())}</Button>
+                    onClick={this.queueControlHandler}>{QUEUE_CONTROL_CLASSES.get(this.getUserMode())}</Button>
 
 
             <ButtonGroup toggle>

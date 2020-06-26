@@ -1,3 +1,33 @@
-.normalModePanel > * {
-    width: 100%;
+.normalModePanel {
+    background: #4d4d4d url('/resources/images/round.svg') no-repeat center/80%;
+    width: 20vh;
+    height: 20vh;
+    left: 50%;
+    bottom: 0;
+    position: fixed;
+    z-index: 2;
+    border: 1vh solid lightgreen;
+    border-radius: 50%;
+    transform: translate(-50%, 0);
+}
+
+.normalGetIn {
+    background: #4d4d4d url('/resources/images/go-in.svg') no-repeat center/70%;
+}
+
+.normalQueueUp {
+    background: #4d4d4d url('/resources/images/hand-up.svg') no-repeat center/60%;
+}
+
+.normalLeaveQueue {
+    background: #4d4d4d url('/resources/images/hand-down.svg') no-repeat center/60%;
+}
+
+.normalStopSpeaking {
+    background: #4d4d4d url('/resources/images/go-out.svg') no-repeat center/70%;
+}
+
+.normalStopSpeakingSomeoneWaiting {
+    background: #4d4d4d url('/resources/images/go-out.svg') no-repeat center/70%;
+    border: 1vh solid yellow;
 }

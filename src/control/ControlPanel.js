@@ -1,14 +1,8 @@
 import React, {Component} from 'react';
 import {APPLICATION_MODE} from '../enums/settings.js'
-import {ButtonGroup, ToggleButton} from "react-bootstrap";
 import './ControlPanel.css';
 import NormalModePanel from "./NormalModePanel";
 import RoundModePanel from "./RoundModePanel";
-
-const modeButtons = [
-    {name: 'Normal Mode', value: APPLICATION_MODE.NORMAL},
-    {name: 'Round Mode', value: APPLICATION_MODE.ROUND},
-];
 
 export default class ControlPanel extends Component {
 
