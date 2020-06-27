@@ -17,11 +17,13 @@ export default class Circle extends Component {
             {
                 this.props.streamManager !== undefined
                     ? (<div style={this.props.streamPosition} className='streamContainer'>
-                            <div className='streamcomponent' style={this.props.streamSize}>
+                            <div className={'streamcomponent' + (this.props.nextInQueue ? ' nextInQueue' : '')}
+                                 style={this.props.streamSize}>
                                 <OpenViduVideoComponent streamManager={this.props.streamManager}/>
                             </div>
                         </div>
-                    ) : <img style={{...this.props.streamSize, ...this.props.streamPosition}}  className='streamContainer streamcomponent'
+                    ) : <img style={{...this.props.streamSize, ...this.props.streamPosition}}
+                             className='streamContainer streamcomponent'
                              src='resources/images/empty_center.png' alt='Empty center'/>
             }
         </div>);

@@ -71,11 +71,13 @@ export default class StartButton extends Component {
                 className={'roundModePanel-startButton-additionalPanel ' + MODE_TO_BUTTON_CLASS.get(this.props.applicationMode)}>
                 <img alt='Round icon' src='/resources/images/round.svg'/>
                 <span className='abort'>Abort?</span>
-                <span className='yes' onClick={() => this.props.userStream.stream.session.signal({
-                    type: SIGNALS.UPDATE_ROUND,
-                    data: JSON.stringify({queue: [], roundTime: this.state.roundTime}),
-                })
-                }>Yes</span>
+                <span className='yes' onClick={() => {
+                    this.setState({view: VIEW.REGULAR});
+                    this.props.userStream.stream.session.signal({
+                        type: SIGNALS.UPDATE_ROUND,
+                        data: JSON.stringify({queue: [], roundTime: this.state.roundTime}),
+                    })
+                }}>Yes</span>
                 <span className='no' onClick={() => this.setState({view: VIEW.REGULAR})}>No</span>
             </div>
             }

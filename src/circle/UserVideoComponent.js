@@ -30,7 +30,10 @@ export default class UserVideoComponent extends Component {
         };
 
         return (
-            <Circle streamPosition={streamPosition} streamSize={streamSize} streamManager={this.props.streamManager}/>
+            <Circle streamPosition={streamPosition}
+                    streamSize={streamSize}
+                    streamManager={this.props.streamManager}
+                    nextInQueue={this.props.nextInQueue}/>
         );
     }
 }

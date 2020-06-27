@@ -25,3 +25,7 @@ p {
     margin: 0;
 }
 
+.nextInQueue {
+    box-shadow: 0 0 0 1vh yellow;
+}
+

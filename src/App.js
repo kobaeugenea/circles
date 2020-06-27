@@ -346,6 +346,7 @@ class App extends Component {
                         <div id="video-container" className="videoContainer">
                             {this.getAllUsers().map((sub, i) => (
                                 <UserVideoComponent key={i}
+                                    nextInQueue={this.state.speakingQueue.length > 1 && this.state.speakingQueue[1] === App.getUserName(sub)}
                                     streamManager={this.state.mainStreamManager !== sub ? sub : undefined}
                                     tPosition={this.calculatePosition(i)}/>
                             ))}
