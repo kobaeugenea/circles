@@ -4,7 +4,7 @@ import React, {Component} from 'react';
 import UserVideoComponent from './circle/UserVideoComponent';
 import {SIGNALS, APPLICATION_MODE} from './enums/settings.js'
 import ControlPanel from './control/ControlPanel.js'
-import Queue from './Queue.js'
+import MainCircle from './MainCircle.js'
 import 'bootstrap/dist/css/bootstrap.min.css';
 import './App.css';
 import Timer from "./Timer";
@@ -337,7 +337,7 @@ class App extends Component {
                                       allUsers={this.getAllUsers()}
                                       roundTime={this.state.roundTime}
                                       resetRoundTimerFunction={() => this.resetRoundTimer()}/>
-                        <Queue queue={this.state.speakingQueue} streamManager={this.state.mainStreamManager}/>
+                        <MainCircle streamManager={this.state.mainStreamManager}/>
                         {this.state.secLeftToSpeak > 0 ? <Timer secLeftToSpeak={this.state.secLeftToSpeak}/> : null}
                         <div id="session-header">
                             <h1 id="session-title">{mySessionId}</h1>

@@ -3,13 +3,6 @@ import OpenViduVideoComponent from './OvVideo';
 
 export default class Circle extends Component {
 
-    getNicknameTag() {
-        if (this.props.streamManager.stream === undefined) {
-            return null;
-        }
-        return JSON.parse(this.props.streamManager.stream.connection.data).clientData;
-    }
-
     constructor(props) {
         super(props);
         this.state = {width: window.innerWidth, height: window.innerHeight};
@@ -24,7 +17,6 @@ export default class Circle extends Component {
             {
                 this.props.streamManager !== undefined
                     ? (<div style={this.props.streamPosition} className='streamContainer'>
-                            <p>{this.getNicknameTag()}</p>
                             <div className='streamcomponent' style={this.props.streamSize}>
                                 <OpenViduVideoComponent streamManager={this.props.streamManager}/>
                             </div>

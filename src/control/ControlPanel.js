@@ -2,7 +2,7 @@ import React, {Component} from 'react';
 import {APPLICATION_MODE} from '../enums/settings.js'
 import './ControlPanel.css';
 import NormalModePanel from "./NormalModePanel";
-import RoundModePanel from "./RoundModePanel";
+import RoundModePanel from "./round/RoundModePanel";
 
 export default class ControlPanel extends Component {
 

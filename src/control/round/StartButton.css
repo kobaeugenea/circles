@@ -1,0 +1,97 @@
+.roundModePanel-startButton-button {
+    background-color: #4d4d4d;
+    width: 10vh;
+    height: 10vh;
+    left: 10vh;
+    bottom: 0;
+    position: fixed;
+    z-index: 2;
+    border-radius: 50%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 7vh;
+    cursor: pointer;
+}
+
+.roundModePanel-startButton-button.normalMode {
+    border: 1vh solid lightgreen;
+    color: lightgreen;
+}
+
+.roundModePanel-startButton-button.roundMode {
+    border: 1vh solid indianred;
+    color: indianred;
+    padding-bottom: 1.5vh;
+}
+
+.roundModePanel-startButton-additionalPanel {
+    position: fixed;
+    height: 4.5vh;
+    left: 18vh;
+    bottom: 0.5vh;
+    z-index: 1;
+    display: flex;
+    align-items: center;
+}
+
+.roundModePanel-startButton-additionalPanel.normalMode {
+    border: 0.5vh solid lightgreen;
+}
+
+.roundModePanel-startButton-additionalPanel.roundMode {
+    border: 0.5vh solid indianred;
+}
+
+.roundModePanel-startButton-additionalPanel .btn-secondary {
+    height: 3vh;
+    font-size: 2vh;
+    font-weight: 100 !important;
+    border: 0.1vh solid white;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin: 0 0.5vh;
+    border-radius: 20% !important;
+    outline: 0!important;
+}
+
+.roundModePanel-startButton-additionalPanel .btn-secondary.active {
+    border: 0.1vh solid black!important;
+    color: black!important;
+    background-color: gray!important;
+}
+
+.roundModePanel-startButton-additionalPanel > img {
+    height: 3vh;
+    margin: 0 2vh;
+}
+
+.roundModePanel-startButton-additionalPanel > .abort {
+    height: 3vh;
+    font-size: 2vh;
+    color: white;
+    margin: 0 2vh 0 0;
+}
+
+.roundModePanel-startButton-additionalPanel > .yes {
+    height: 3vh;
+    font-size: 2vh;
+    margin: 0 2vh 0 0;
+    background-color: indianred;
+    padding: 0 0.3vh;
+    border: 0.1vh solid black;
+    border-radius: 20%;
+    cursor: pointer;
+}
+
+.roundModePanel-startButton-additionalPanel > .no {
+    height: 3vh;
+    font-size: 2vh;
+    margin: 0 2vh 0 0;
+    background-color: lightgreen;
+    padding: 0 0.3vh;
+    border: 0.1vh solid black;
+    border-radius: 20%;
+    cursor: pointer;
+}

@@ -16,10 +16,11 @@ export const USER_CONTROL_NORMAL = {
     STOP_SPEAKING_SOMEONE_WAITING: "stop_speaking_someone_waiting",
 };
 
-export const USER_MODE_ROUND = {
-    BEFORE_ROUND: "before_round",
-    NORMAL: "round",
-    SPEAKING: "speaking_round",
+export const USER_CONTROL_ROUND = {
+    START_ROUND: "start_round",
+    IN_QUEUE: "in_queue",
+    SPEAKING: "speaking",
+    HAVE_SPOKEN: "have_spoken",
 };
 
 export const ROUND_TIME = {

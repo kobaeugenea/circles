@@ -18,7 +18,7 @@
     background: #4d4d4d url('/resources/images/round.svg') no-repeat center/80%;
     width: 10vh;
     height: 10vh;
-    left: 10vw;
+    left: 10vh;
     bottom: 0;
     position: fixed;
     z-index: 2;

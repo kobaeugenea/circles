@@ -1,9 +1,8 @@
 import React, {Component} from 'react';
-import {ListGroup} from "react-bootstrap";
 import './Queue.css';
 import Circle from "./circle/Circle";
 
-export default class Queue extends Component {
+export default class MainCircle extends Component {
 
     constructor(props) {
         super(props);
@@ -29,15 +28,7 @@ export default class Queue extends Component {
             height: h,
         };
 
-        return <div>
-            <Circle streamPosition={streamPosition} streamSize={streamSize} streamManager={this.props.streamManager}/>
-            <ListGroup className='queueList'>
-                <ListGroup.Item>Speaking queue:</ListGroup.Item>
-                {this.props.queue.map((item, idx) => (
-                    <ListGroup.Item key={idx} variant={idx === 0 ? 'primary' : 'secondary'}>{item}</ListGroup.Item>
-                ))}
-            </ListGroup>
-        </div>;
+        return <Circle streamPosition={streamPosition} streamSize={streamSize} streamManager={this.props.streamManager}/>;
     }
 
 }
