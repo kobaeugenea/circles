@@ -1,0 +1,52 @@
+.roundModeControl-speaking{
+    left: 50%;
+    bottom: 0;
+    z-index: 2;
+    transform: translate(-50%, 0);
+}
+
+.roundModeControl-speaking *{
+    font-size: 4vh!important;
+    cursor: pointer;
+}
+
+.roundModeControl-speaking > .overlap{
+    width: 100%;
+    height: 100%;
+    border-radius: 50%;
+    background-color: white;
+    position: absolute;
+    box-shadow: 0 0 0 0.5vh black;
+}
+
+.roundModeControl-inQueue{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 4vh;
+    width: 10vh;
+    height: 10vh;
+    left: 50%;
+    bottom: 0;
+    position: fixed;
+    z-index: 2;
+    color: lightgreen;
+    border: 1vh solid lightgreen;
+    border-radius: 50%;
+    transform: translate(-50%, 0);
+    background-color: #4d4d4d;
+    cursor: pointer;
+}
+
+.roundModeControl-haveSpoken{
+    width: 10vh;
+    height: 10vh;
+    left: 50%;
+    bottom: 0;
+    position: fixed;
+    z-index: 2;
+    border: 1vh solid gray;
+    border-radius: 50%;
+    transform: translate(-50%, 0);
+    background-color: #4d4d4d;
+}

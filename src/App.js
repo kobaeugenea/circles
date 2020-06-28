@@ -7,11 +7,12 @@ import ControlPanel from './control/ControlPanel.js'
 import MainCircle from './MainCircle.js'
 import 'bootstrap/dist/css/bootstrap.min.css';
 import './App.css';
-import Timer from "./Timer";
 import Devices from "./Devices";
 
 const OPENVIDU_SERVER_URL = 'https://' + window.location.hostname + ':4443';
 const OPENVIDU_SERVER_SECRET = 'MY_SECRET';
+
+const TIMER_STEPS = 300;
 
 
 class App extends Component {
@@ -28,7 +29,7 @@ class App extends Component {
             speakingQueue: [],
             applicationMode: APPLICATION_MODE.NORMAL,
             roundTime: undefined,
-            secLeftToSpeak: 0,
+            msecLeftToSpeak: 0,
             devices: undefined,
             camera: undefined,
             microphone: undefined,
@@ -152,7 +153,7 @@ class App extends Component {
                     const data = JSON.parse(event.data);
                     let mainStreamManager;
                     let applicationMode;
-                    let secLeftToSpeak = 0;
+                    let msecLeftToSpeak = 0;
 
                     if (data.queue.length !== 0) {
                         const speaksNow = data.queue[0];
@@ -166,15 +167,16 @@ class App extends Component {
                         //this user isn't speaker
                         if (data.queue[0] !== App.getUserName(this.state.publisher)) {
                             clearInterval(this.timerId);
-                            secLeftToSpeak = 0;
+                            msecLeftToSpeak = 0;
                             //this user just starts to speak
                         } else if (data.roundTime > -1 && this.state.speakingQueue.toString() !== data.queue.toString()) {
-                            secLeftToSpeak = data.roundTime * 60;
+                            msecLeftToSpeak = data.roundTime;
+                            const step = msecLeftToSpeak / TIMER_STEPS;
                             clearInterval(this.timerId);
                             this.timerId = setInterval(() => {
-                                let secLeftToSpeak = this.state.secLeftToSpeak - 1;
+                                let secLeftToSpeak = this.state.msecLeftToSpeak - step;
                                 this.setState({
-                                    secLeftToSpeak: secLeftToSpeak,
+                                    msecLeftToSpeak: secLeftToSpeak,
                                 });
                                 if (secLeftToSpeak < 1) {
                                     const speakingQueue = this.state.speakingQueue;
@@ -185,10 +187,10 @@ class App extends Component {
                                         data: JSON.stringify({queue: speakingQueue, roundTime: data.roundTime}),
                                     });
                                 }
-                            }, 1000);
+                            }, step);
                             //this user continue speak
                         } else {
-                            secLeftToSpeak = this.state.secLeftToSpeak;
+                            msecLeftToSpeak = this.state.msecLeftToSpeak;
                         }
                     }
 
@@ -197,7 +199,7 @@ class App extends Component {
                         mainStreamManager: mainStreamManager,
                         applicationMode: applicationMode,
                         roundTime: data.roundTime,
-                        secLeftToSpeak: secLeftToSpeak,
+                        msecLeftToSpeak: msecLeftToSpeak,
                     });
                 });
 
@@ -336,9 +338,9 @@ class App extends Component {
                                       applicationMode={this.state.applicationMode}
                                       allUsers={this.getAllUsers()}
                                       roundTime={this.state.roundTime}
+                                      msecLeftToSpeak={this.state.msecLeftToSpeak}
                                       resetRoundTimerFunction={() => this.resetRoundTimer()}/>
                         <MainCircle streamManager={this.state.mainStreamManager}/>
-                        {this.state.secLeftToSpeak > 0 ? <Timer secLeftToSpeak={this.state.secLeftToSpeak}/> : null}
                         <div id="session-header">
                             <h1 id="session-title">{mySessionId}</h1>
                         </div>

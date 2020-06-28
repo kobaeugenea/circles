@@ -3,6 +3,7 @@ import {APPLICATION_MODE, ROUND_TIME, USER_CONTROL_ROUND} from '../../enums/sett
 import './RoundModePanel.css';
 import StartButton from "./StartButton";
 import App from "../../App";
+import RoundModeControl from "./RoundModeControl";
 
 export default class RoundModePanel extends Component {
 
@@ -16,6 +17,11 @@ export default class RoundModePanel extends Component {
             <StartButton applicationMode={this.props.applicationMode}
                          userStream={this.props.userStream}
                          allUsers={this.props.allUsers}/>
+            <RoundModeControl roundControlMode={this.getUserMode()}
+                              msecLeftToSpeak={this.props.msecLeftToSpeak}
+                              roundTime={this.props.roundTime}
+                              speakingQueue={this.props.speakingQueue}
+                              userStream={this.props.userStream}/>
         </div>;
     }
 

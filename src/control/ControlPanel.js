@@ -34,7 +34,8 @@ export default class ControlPanel extends Component {
                                   allUsers={this.props.allUsers}
                                   speakingQueue={this.props.speakingQueue}
                                   userStream={this.props.userStream}
-                                  roundTime={this.props.roundTime}/>}
+                                  roundTime={this.props.roundTime}
+                                  msecLeftToSpeak={this.props.msecLeftToSpeak}/>}
 
             <Toolbar userStream={this.props.userStream} leaveSession={this.props.leaveSession}/>
 

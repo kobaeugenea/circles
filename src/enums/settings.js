@@ -24,9 +24,9 @@ export const USER_CONTROL_ROUND = {
 };
 
 export const ROUND_TIME = {
-    HALF_MINUTE: "0.5",
-    MINUTE: "1",
-    TWO_MINUTE: "2",
-    FIVE_MINUTE: "5",
+    HALF_MINUTE: "30000",
+    MINUTE: "60000",
+    TWO_MINUTE: "120000",
+    FIVE_MINUTE: "300000",
     ENDLESS: "-1",
 };
