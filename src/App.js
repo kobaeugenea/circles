@@ -68,12 +68,14 @@ class App extends Component {
 
 
     handleChangeCamera(e) {
+        localStorage.setItem('camera', e.target.value);
         this.setState({
             camera: e.target.value,
         });
     }
 
     handleChangeMicrophone(e) {
+        localStorage.setItem('microphone', e.target.value);
         this.setState({
             microphone: e.target.value,
         });

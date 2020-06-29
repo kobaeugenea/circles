@@ -11,7 +11,9 @@ export default class Devices extends Component {
                         <Form.Label>Select camera:</Form.Label>
                         <Form.Control onChange={e => this.props.changeCamera(e)} as="select" size="lg">
                             {this.props.devices.filter(device => device.kind === 'videoinput').map((device, idx) => (
-                                <option key={idx} value={device.deviceId}>{device.label}</option>
+                                <option key={idx}
+                                        selected={localStorage.getItem('camera') === device.deviceId}
+                                        value={device.deviceId}>{device.label}</option>
                             ))}
                         </Form.Control>
                     </p>
@@ -19,7 +21,9 @@ export default class Devices extends Component {
                         <Form.Label>Select microphone:</Form.Label>
                         <Form.Control onChange={e => this.props.changeMicrophone(e)} as="select" size="lg">
                             {this.props.devices.filter(device => device.kind === 'audioinput').map((device, idx) => (
-                                <option key={idx} value={device.deviceId}>{device.label}</option>
+                                <option key={idx}
+                                        selected={localStorage.getItem('microphone') === device.deviceId}
+                                        value={device.deviceId}>{device.label}</option>
                             ))}
                         </Form.Control>
                     </p>
