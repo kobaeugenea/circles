@@ -6,11 +6,16 @@ export default class UserVideoComponent extends Component {
 
     constructor(props) {
         super(props);
-        this.state = {width: window.innerWidth, height: window.innerHeight};
+        this.state = {width: window.innerWidth, height: window.innerHeight, microphoneEnabled: true};
     }
 
     componentDidMount() {
         window.addEventListener('resize', () => this.setState({width: window.innerWidth, height: window.innerHeight}));
+        this.props.streamManager.on('streamPropertyChanged', event => {
+            if(event.changedProperty === 'audioActive'){
+                this.setState({microphoneEnabled: event.newValue});
+            }
+        });
     }
 
     render() {
@@ -33,7 +38,8 @@ export default class UserVideoComponent extends Component {
             <Circle streamPosition={streamPosition}
                     streamSize={streamSize}
                     streamManager={this.props.streamManager}
-                    nextInQueue={this.props.nextInQueue}/>
+                    nextInQueue={this.props.nextInQueue}
+                    microphoneEnabled={this.state.microphoneEnabled}/>
         );
     }
 }

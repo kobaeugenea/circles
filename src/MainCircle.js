@@ -28,7 +28,10 @@ export default class MainCircle extends Component {
             height: h,
         };
 
-        return <Circle streamPosition={streamPosition} streamSize={streamSize} streamManager={this.props.streamManager}/>;
+        return <Circle streamPosition={streamPosition}
+                       streamSize={streamSize}
+                       streamManager={this.props.streamManager}
+                       microphoneEnabled={true}/>;
     }
 
 }

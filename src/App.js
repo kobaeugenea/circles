@@ -169,11 +169,13 @@ class App extends Component {
                     let applicationMode;
                     let msecLeftToSpeak = 0;
 
-                    const speaksNow = data.queue[0];
+                    let speaksNow;
                     if (data.queue.length !== 0) {
+                        speaksNow = data.queue[0];
                         mainStreamManager = this.getAllUsers().filter(el => App.getUserId(el) === speaksNow)[0];
                     }
-                    if(this.userId === speaksNow){
+
+                    if (this.userId === speaksNow) {
                         this.state.publisher.publishAudio(true);
                     } else {
                         this.state.publisher.publishAudio(this.state.microphoneEnabled);
@@ -337,8 +339,7 @@ class App extends Component {
 
                 {this.state.publisher !== undefined && this.state.publisher.stream !== undefined ? (
                     <div id="session">
-                        <ControlPanel leaveSession={() => this.leaveSession()}
-                                      userStream={this.state.publisher}
+                        <ControlPanel userStream={this.state.publisher}
                                       mainStream={this.state.mainStreamManager}
                                       speakingQueue={this.state.speakingQueue}
                                       applicationMode={this.state.applicationMode}
@@ -361,8 +362,10 @@ class App extends Component {
                         </div>
                     </div>
                 ) : null}
-                <Toolbar changeMicrophoneStatus={this.changeMicrophoneStatus}
-                         microphoneEnabled={this.state.microphoneEnabled}/>
+                <Toolbar leaveSession={this.leaveSession}
+                         changeMicrophoneStatus={this.changeMicrophoneStatus}
+                         microphoneEnabled={this.state.microphoneEnabled}
+                         microphoneIconEnabled={this.state.mainStreamManager !== this.state.publisher}/>
             </div>
         );
     }
