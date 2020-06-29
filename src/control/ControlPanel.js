@@ -3,7 +3,6 @@ import {APPLICATION_MODE} from '../enums/settings.js'
 import './ControlPanel.css';
 import NormalModePanel from "./NormalModePanel";
 import RoundModePanel from "./round/RoundModePanel";
-import Toolbar from "./Toolbar";
 
 export default class ControlPanel extends Component {
 
@@ -36,8 +35,6 @@ export default class ControlPanel extends Component {
                                   userStream={this.props.userStream}
                                   roundTime={this.props.roundTime}
                                   msecLeftToSpeak={this.props.msecLeftToSpeak}/>}
-
-            <Toolbar userStream={this.props.userStream} leaveSession={this.props.leaveSession}/>
 
             <footer className="footer"/>
         </div>;

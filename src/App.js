@@ -8,6 +8,7 @@ import MainCircle from './MainCircle.js'
 import 'bootstrap/dist/css/bootstrap.min.css';
 import './App.css';
 import Devices from "./Devices";
+import Toolbar from "./Toolbar";
 
 const OPENVIDU_SERVER_URL = 'https://' + window.location.hostname + ':4443';
 const OPENVIDU_SERVER_SECRET = 'MY_SECRET';
@@ -32,10 +33,12 @@ class App extends Component {
             devices: undefined,
             camera: undefined,
             microphone: undefined,
+            microphoneEnabled: true,
         };
 
         this.joinSession = this.joinSession.bind(this);
         this.leaveSession = this.leaveSession.bind(this);
+        this.changeMicrophoneStatus = this.changeMicrophoneStatus.bind(this);
         this.handleChangeSessionId = this.handleChangeSessionId.bind(this);
         this.handleChangeCamera = this.handleChangeCamera.bind(this);
         this.handleChangeMicrophone = this.handleChangeMicrophone.bind(this);
@@ -48,7 +51,7 @@ class App extends Component {
         });
     }
 
-    static getSessionName(){
+    static getSessionName() {
         return App.isNewSession() ? 'SessionA' : window.location.pathname.slice(1);
     }
 
@@ -87,6 +90,11 @@ class App extends Component {
         this.setState({
             microphone: e.target.value,
         });
+    }
+
+    changeMicrophoneStatus() {
+        this.state.publisher.publishAudio(!this.state.publisher?.stream?.audioActive);
+        this.setState({microphoneEnabled: this.state.publisher?.stream?.audioActive});
     }
 
     deleteSubscriber(streamManager) {
@@ -161,9 +169,14 @@ class App extends Component {
                     let applicationMode;
                     let msecLeftToSpeak = 0;
 
+                    const speaksNow = data.queue[0];
                     if (data.queue.length !== 0) {
-                        const speaksNow = data.queue[0];
                         mainStreamManager = this.getAllUsers().filter(el => App.getUserId(el) === speaksNow)[0];
+                    }
+                    if(this.userId === speaksNow){
+                        this.state.publisher.publishAudio(true);
+                    } else {
+                        this.state.publisher.publishAudio(this.state.microphoneEnabled);
                     }
 
                     if (event.type === 'signal:' + SIGNALS.UPDATE_QUEUE || data.queue.length === 0) {
@@ -348,6 +361,8 @@ class App extends Component {
                         </div>
                     </div>
                 ) : null}
+                <Toolbar changeMicrophoneStatus={this.changeMicrophoneStatus}
+                         microphoneEnabled={this.state.microphoneEnabled}/>
             </div>
         );
     }

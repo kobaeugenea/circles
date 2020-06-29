@@ -5,20 +5,12 @@ import {Mic, MicOff, Settings} from "@material-ui/icons";
 
 export default class Toolbar extends Component {
 
-    constructor(props) {
-        super(props);
-        this.state = {mic: true};
-    }
-
     render() {
         return <div className='toolbar'>
-            <IconButton color='inherit' className="navButton" id="navMicButton" onClick={() => {
-                this.setState({mic: !this.state.mic});
-                this.props.userStream.publishAudio(this.state.mic);
-            }}>
-                {this.state.mic
-                    ? <Mic color="primary" style={{color: 'red', fontSize: '3vh'}}/>
-                    : <MicOff color="secondary" style={{color: 'white', fontSize: '3vh'}}/>}
+            <IconButton color='inherit' className="navButton" id="navMicButton" onClick={this.props.changeMicrophoneStatus}>
+                {this.props.microphoneEnabled
+                    ? <Mic style={{color: 'green', fontSize: '3vh'}}/>
+                    : <MicOff style={{color: 'red', fontSize: '3vh'}}/>}
             </IconButton>
             <IconButton color='inherit' className="navButton" onClick={this.props.leaveSession} id="navLeaveButton">
                 <Settings color="secondary" style={{color: 'white', fontSize: '3vh'}}/>
