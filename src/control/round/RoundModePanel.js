@@ -28,10 +28,10 @@ export default class RoundModePanel extends Component {
     getUserMode() {
         if (this.props.applicationMode !== APPLICATION_MODE.ROUND) {
             return USER_CONTROL_ROUND.START_ROUND;
-        } else if (this.props.speakingQueue[0] === App.getUserName(this.props.userStream)) {
+        } else if (this.props.speakingQueue[0] === App.getUserId(this.props.userStream)) {
             return USER_CONTROL_ROUND.SPEAKING;
         }
-        return this.props.speakingQueue.indexOf(App.getUserName(this.props.userStream)) > -1
+        return this.props.speakingQueue.indexOf(App.getUserId(this.props.userStream)) > -1
             ? USER_CONTROL_ROUND.IN_QUEUE
             : USER_CONTROL_ROUND.HAVE_SPOKEN;
     }

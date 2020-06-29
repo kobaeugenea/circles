@@ -23,12 +23,12 @@ export default class NormalModePanel extends Component {
         switch (userMode) {
             case USER_CONTROL_NORMAL.GET_IN:
             case USER_CONTROL_NORMAL.QUEUE_UP:
-                speakingQueue.push(App.getUserName(this.props.userStream));
+                speakingQueue.push(App.getUserId(this.props.userStream));
                 break;
             case USER_CONTROL_NORMAL.LEAVE_QUEUE:
             case USER_CONTROL_NORMAL.STOP_SPEAKING:
             case USER_CONTROL_NORMAL.STOP_SPEAKING_SOMEONE_WAITING:
-                let index = speakingQueue.indexOf(App.getUserName(this.props.userStream), 0);
+                let index = speakingQueue.indexOf(App.getUserId(this.props.userStream), 0);
                 if (index > -1) {
                     speakingQueue.splice(index, 1);
                 }
@@ -49,7 +49,7 @@ export default class NormalModePanel extends Component {
                 : USER_CONTROL_NORMAL.STOP_SPEAKING;
         }
 
-        if (this.props.speakingQueue.indexOf(App.getUserName(this.props.userStream)) > -1) {
+        if (this.props.speakingQueue.indexOf(App.getUserId(this.props.userStream)) > -1) {
             return USER_CONTROL_NORMAL.LEAVE_QUEUE;
         } else {
             return this.props.speakingQueue.length > 0 ? USER_CONTROL_NORMAL.QUEUE_UP : USER_CONTROL_NORMAL.GET_IN;

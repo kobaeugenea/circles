@@ -1,7 +1,7 @@
 import React, {Component} from 'react';
 import './Toolbar.css';
 import IconButton from "@material-ui/core/IconButton";
-import {Mic, MicOff, PowerSettingsNew} from "@material-ui/icons";
+import {Mic, MicOff, Settings} from "@material-ui/icons";
 
 export default class Toolbar extends Component {
 
@@ -21,7 +21,7 @@ export default class Toolbar extends Component {
                     : <MicOff color="secondary" style={{color: 'white', fontSize: '3vh'}}/>}
             </IconButton>
             <IconButton color='inherit' className="navButton" onClick={this.props.leaveSession} id="navLeaveButton">
-                <PowerSettingsNew color="secondary" style={{color: 'red', fontSize: '3vh'}}/>
+                <Settings color="secondary" style={{color: 'white', fontSize: '3vh'}}/>
             </IconButton>
         </div>;
     }

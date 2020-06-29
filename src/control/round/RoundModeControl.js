@@ -11,7 +11,7 @@ export default class RoundModeControl extends Component {
         switch (this.props.roundControlMode) {
             case USER_CONTROL_ROUND.IN_QUEUE:
                 return <div className='roundModeControl-inQueue'>
-                    {this.props.speakingQueue.indexOf(App.getUserName(this.props.userStream), 0)}
+                    {this.props.speakingQueue.indexOf(App.getUserId(this.props.userStream), 0)}
                 </div>;
             case USER_CONTROL_ROUND.HAVE_SPOKEN:
                 return <div className='roundModeControl-haveSpoken'/>;
@@ -21,7 +21,7 @@ export default class RoundModeControl extends Component {
                               maxValue={this.props.roundTime}
                               onClick={() => {
                                   let speakingQueue = this.props.speakingQueue;
-                                  let index = speakingQueue.indexOf(App.getUserName(this.props.userStream), 0);
+                                  let index = speakingQueue.indexOf(App.getUserId(this.props.userStream), 0);
                                   if (index > -1) {
                                       speakingQueue.splice(index, 1);
                                   }

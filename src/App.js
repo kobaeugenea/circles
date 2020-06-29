@@ -21,7 +21,6 @@ class App extends Component {
 
         this.state = {
             mySessionId: 'SessionA',
-            myUserName: 'Participant' + Math.floor(Math.random() * 100),
             session: undefined,
             mainStreamManager: undefined,
             publisher: undefined,
@@ -38,7 +37,6 @@ class App extends Component {
         this.joinSession = this.joinSession.bind(this);
         this.leaveSession = this.leaveSession.bind(this);
         this.handleChangeSessionId = this.handleChangeSessionId.bind(this);
-        this.handleChangeUserName = this.handleChangeUserName.bind(this);
         this.handleChangeCamera = this.handleChangeCamera.bind(this);
         this.handleChangeMicrophone = this.handleChangeMicrophone.bind(this);
         this.onbeforeunload = this.onbeforeunload.bind(this);
@@ -68,11 +66,6 @@ class App extends Component {
         });
     }
 
-    handleChangeUserName(e) {
-        this.setState({
-            myUserName: e.target.value,
-        });
-    }
 
     handleChangeCamera(e) {
         this.setState({
@@ -98,6 +91,8 @@ class App extends Component {
     }
 
     joinSession() {
+        this.userId = Date.now();
+
         // --- 2) Init a session ---
 
         this.setState(
@@ -157,7 +152,7 @@ class App extends Component {
 
                     if (data.queue.length !== 0) {
                         const speaksNow = data.queue[0];
-                        mainStreamManager = this.getAllUsers().filter(el => App.getUserName(el) === speaksNow)[0];
+                        mainStreamManager = this.getAllUsers().filter(el => App.getUserId(el) === speaksNow)[0];
                     }
 
                     if (event.type === 'signal:' + SIGNALS.UPDATE_QUEUE || data.queue.length === 0) {
@@ -165,7 +160,7 @@ class App extends Component {
                     } else {
                         applicationMode = APPLICATION_MODE.ROUND;
                         //this user isn't speaker
-                        if (data.queue[0] !== App.getUserName(this.state.publisher)) {
+                        if (data.queue[0] !== App.getUserId(this.state.publisher)) {
                             clearInterval(this.timerId);
                             msecLeftToSpeak = 0;
                             //this user just starts to speak
@@ -211,10 +206,7 @@ class App extends Component {
                     // First param is the token got from OpenVidu Server. Second param can be retrieved by every user on event
                     // 'streamCreated' (property Stream.connection.data), and will be appended to DOM as the user's nickname
                     mySession
-                        .connect(
-                            token,
-                            {clientData: this.state.myUserName},
-                        )
+                        .connect(token, {clientData: this.userId},)
                         .then(() => {
 
                             // --- 5) Get your own camera stream ---
@@ -252,15 +244,17 @@ class App extends Component {
     isHost() {
         const publisher = this.state.publisher;
         return publisher !== undefined
-            && App.getUserName(publisher) === this.getAllUsers().map(subscriber => App.getUserName(subscriber)).sort()[0];
+            && App.getUserId(publisher) === this.getAllUsers().map(subscriber => App.getUserId(subscriber)).sort()[0];
     }
 
-    static getUserName(streamManager) {
+    static getUserId(streamManager) {
         return JSON.parse(streamManager.stream.connection.data).clientData;
     }
 
     getAllUsers() {
-        return [this.state.publisher].concat(this.state.subscribers);
+        return [this.state.publisher].concat(this.state.subscribers).sort((a, b) => {
+            return App.getUserId(a) - App.getUserId(b);
+        });
     }
 
     leaveSession() {
@@ -279,7 +273,6 @@ class App extends Component {
             session: undefined,
             subscribers: [],
             mySessionId: 'SessionA',
-            myUserName: 'Participant' + Math.floor(Math.random() * 100),
             mainStreamManager: undefined,
             publisher: undefined
         });
@@ -287,7 +280,6 @@ class App extends Component {
 
     render() {
         const mySessionId = this.state.mySessionId;
-        const myUserName = this.state.myUserName;
 
         return (
             <div className="container">
@@ -296,17 +288,6 @@ class App extends Component {
                         <div id="join-dialog" className="jumbotron vertical-center">
                             <h1> Join a video session </h1>
                             <form className="form-group" onSubmit={this.joinSession}>
-                                <p>
-                                    <label>Participant: </label>
-                                    <input
-                                        className="form-control"
-                                        type="text"
-                                        id="userName"
-                                        value={myUserName}
-                                        onChange={this.handleChangeUserName}
-                                        required
-                                    />
-                                </p>
                                 <p>
                                     <label> Session: </label>
                                     <input
@@ -348,9 +329,9 @@ class App extends Component {
                         <div id="video-container" className="videoContainer">
                             {this.getAllUsers().map((sub, i) => (
                                 <UserVideoComponent key={i}
-                                    nextInQueue={this.state.speakingQueue.length > 1 && this.state.speakingQueue[1] === App.getUserName(sub)}
-                                    streamManager={this.state.mainStreamManager !== sub ? sub : undefined}
-                                    tPosition={this.calculatePosition(i)}/>
+                                                    nextInQueue={this.state.speakingQueue.length > 1 && this.state.speakingQueue[1] === App.getUserId(sub)}
+                                                    streamManager={this.state.mainStreamManager !== sub ? sub : undefined}
+                                                    tPosition={this.calculatePosition(i)}/>
                             ))}
                         </div>
                     </div>
@@ -360,7 +341,7 @@ class App extends Component {
     }
 
     calculatePosition(streamNum) {
-        return (Math.PI * 2 / (this.state.subscribers.length + 1) * streamNum) + (Math.PI / 4);
+        return (Math.PI * 2) - (Math.PI * 2 / (this.state.subscribers.length + 1) * streamNum) + (Math.PI / 4);
     }
 
     /**

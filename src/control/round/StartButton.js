@@ -90,7 +90,7 @@ export default class StartButton extends Component {
         let speakingQueue;
         switch (applicationMode) {
             case APPLICATION_MODE.NORMAL:
-                speakingQueue = this.props.allUsers.map(userStream => App.getUserName(userStream));
+                speakingQueue = this.props.allUsers.map(userStream => App.getUserId(userStream));
                 this.props.userStream.stream.session.signal({
                     type: SIGNALS.UPDATE_ROUND,
                     data: JSON.stringify({queue: speakingQueue, roundTime: this.state.roundTime}),
