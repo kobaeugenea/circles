@@ -10,6 +10,19 @@ export default class NormalModePanel extends Component {
         super(props, context);
 
         this.queueControlHandler = this.queueControlHandler.bind(this);
+        this.keyDownListener = event => {
+            if(event.keyCode === 32){
+                this.queueControlHandler();
+            }
+        };
+    }
+
+    componentDidMount(){
+        document.addEventListener("keydown", this.keyDownListener, false);
+    }
+
+    componentWillUnmount(){
+        document.removeEventListener("keydown", this.keyDownListener, false);
     }
 
     render() {
