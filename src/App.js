@@ -20,7 +20,7 @@ class App extends Component {
         super(props);
 
         this.state = {
-            mySessionId: 'SessionA',
+            mySessionId: App.getSessionName(),
             session: undefined,
             mainStreamManager: undefined,
             publisher: undefined,
@@ -46,6 +46,14 @@ class App extends Component {
         this.OV.getDevices().then(devices => {
             this.setState({devices: devices})
         });
+    }
+
+    static getSessionName(){
+        return App.isNewSession() ? 'SessionA' : window.location.pathname.slice(1);
+    }
+
+    static isNewSession() {
+        return window.location.pathname === '/';
     }
 
     componentDidMount() {
@@ -94,6 +102,7 @@ class App extends Component {
 
     joinSession() {
         this.userId = Date.now();
+        window.history.pushState("", "", '/' + this.state.mySessionId);
 
         // --- 2) Init a session ---
 
@@ -274,7 +283,7 @@ class App extends Component {
         this.setState({
             session: undefined,
             subscribers: [],
-            mySessionId: 'SessionA',
+            mySessionId: App.getSessionName(),
             mainStreamManager: undefined,
             publisher: undefined
         });
@@ -290,6 +299,7 @@ class App extends Component {
                         <div id="join-dialog" className="jumbotron vertical-center">
                             <h1> Join a video session </h1>
                             <form className="form-group" onSubmit={this.joinSession}>
+                                {App.isNewSession() &&
                                 <p>
                                     <label> Session: </label>
                                     <input
@@ -300,7 +310,7 @@ class App extends Component {
                                         onChange={this.handleChangeSessionId}
                                         required
                                     />
-                                </p>
+                                </p>}
                                 <Devices devices={this.state.devices}
                                          changeCamera={(e) => this.handleChangeCamera(e)}
                                          changeMicrophone={(e) => this.handleChangeMicrophone(e)}/>
