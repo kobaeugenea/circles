@@ -4,6 +4,9 @@ import './ControlPanel.css';
 import NormalModePanel from "./NormalModePanel";
 import RoundModePanel from "./round/RoundModePanel";
 
+/*
+    Switcher between controls for round mode and normal mode
+ */
 export default class ControlPanel extends Component {
 
     constructor(props) {
@@ -11,10 +14,13 @@ export default class ControlPanel extends Component {
         this.state = {view: APPLICATION_MODE.NORMAL};
     }
 
-    render() {
-        if (this.props.applicationMode === APPLICATION_MODE.ROUND) {
-            this.state.view = APPLICATION_MODE.ROUND;
+    componentDidUpdate(prevProps, prevState, snapshot) {
+        if (prevProps.applicationMode !== this.props.applicationMode) {
+            this.setState({view: this.props.applicationMode});
         }
+    }
+
+    render() {
         return <div className='controlPanel'>
             {this.props.applicationMode === APPLICATION_MODE.NORMAL &&
             <div className={this.state.view === APPLICATION_MODE.NORMAL ? 'changeToRound' : 'changeToNormal'}

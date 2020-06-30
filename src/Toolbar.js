@@ -3,6 +3,9 @@ import './Toolbar.css';
 import IconButton from "@material-ui/core/IconButton";
 import {Mic, MicOff, Settings} from "@material-ui/icons";
 
+/*
+    Toolbar for settings and mute/unmute icon
+ */
 export default class Toolbar extends Component {
 
     render() {

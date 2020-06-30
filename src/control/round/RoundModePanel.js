@@ -5,6 +5,9 @@ import StartButton from "./StartButton";
 import App from "../../App";
 import RoundModeControl from "./RoundModeControl";
 
+/*
+    Panel that contains all elements for controlling round mode
+ */
 export default class RoundModePanel extends Component {
 
     constructor(props) {

@@ -1,6 +1,9 @@
 import React, {Component} from 'react';
 import {Form} from "react-bootstrap";
 
+/*
+    Selector for devices
+ */
 export default class Devices extends Component {
 
     render() {

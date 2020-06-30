@@ -1,6 +1,5 @@
 import React, {Component} from 'react';
-import './Queue.css';
-import Circle from "./circle/Circle";
+import Circle from "./Circle";
 
 export default class MainCircle extends Component {
 

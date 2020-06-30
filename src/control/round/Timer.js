@@ -3,6 +3,9 @@ import CircularProgress from '@material-ui/core/CircularProgress';
 import Typography from '@material-ui/core/Typography';
 import Box from '@material-ui/core/Box';
 
+/*
+    Round timer that users see
+ */
 export default function Timer(props) {
     const progress = (props.maxValue - props.value) / props.maxValue * 100;
     const label = props.value > 0 ? Math.round(props.value / 1000) : '∞';

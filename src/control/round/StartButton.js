@@ -27,6 +27,9 @@ export const MODE_TO_BUTTON_ICON = new Map([
     [APPLICATION_MODE.ROUND, "■"],
 ]);
 
+/*
+    Button that starts round
+ */
 export default class StartButton extends Component {
 
     constructor(props) {

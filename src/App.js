@@ -44,7 +44,11 @@ class App extends Component {
         this.handleChangeMicrophone = this.handleChangeMicrophone.bind(this);
         this.onbeforeunload = this.onbeforeunload.bind(this);
 
-        // --- 1) Get an OpenVidu object ---
+        this.askCameraAndMicrophonePermission();
+    }
+
+    async askCameraAndMicrophonePermission(){
+        await navigator.mediaDevices.getUserMedia({audio: true, video: true});
         this.OV = new OpenVidu();
         this.OV.getDevices().then(devices => {
             this.setState({devices: devices})

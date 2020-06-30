@@ -4,6 +4,9 @@ import './NormalModePanel.css';
 import App from "../App";
 import {QUEUE_CONTROL_CLASSES} from "../enums/classes";
 
+/*
+    Panel that contains all elements for controlling normal mode
+ */
 export default class NormalModePanel extends Component {
 
     constructor(props, context) {

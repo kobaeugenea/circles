@@ -5,6 +5,9 @@ import Timer from "./Timer";
 import App from "../../App";
 import {SIGNALS} from "../../enums/settings";
 
+/**
+ * Center button of round mode
+ */
 export default class RoundModeControl extends Component {
 
     constructor(props, context) {
