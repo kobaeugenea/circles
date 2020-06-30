@@ -293,8 +293,10 @@ class App extends Component {
             mySession.disconnect();
         }
 
-        // Empty all properties...
-        this.OV = null;
+        this.OV = new OpenVidu();
+        this.OV.getDevices().then(devices => {
+            this.setState({devices: devices})
+        });
         this.setState({
             session: undefined,
             subscribers: [],
