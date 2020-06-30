@@ -31,8 +31,8 @@ class App extends Component {
             roundTime: undefined,
             msecLeftToSpeak: 0,
             devices: undefined,
-            camera: undefined,
-            microphone: undefined,
+            camera: localStorage.getItem('camera'),
+            microphone: localStorage.getItem('microphone'),
             microphoneEnabled: true,
         };
 
