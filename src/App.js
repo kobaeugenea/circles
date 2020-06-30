@@ -1,10 +1,10 @@
 import axios from 'axios';
 import {OpenVidu} from 'openvidu-browser';
 import React, {Component} from 'react';
-import UserVideoComponent from './circle/UserVideoComponent';
+import UserVideo from './circle/UserVideo';
 import {SIGNALS, APPLICATION_MODE} from './enums/settings.js'
 import ControlPanel from './control/ControlPanel.js'
-import MainCircle from './MainCircle.js'
+import MainCircle from './circle/MainCircle.js'
 import 'bootstrap/dist/css/bootstrap.min.css';
 import './App.css';
 import Devices from "./Devices";
@@ -167,18 +167,22 @@ class App extends Component {
                     });
                 });
 
+                // Process all signals from OpenVidu
                 mySession.on('signal', (event) => {
-                    const data = JSON.parse(event.data);
-                    let mainStreamManager;
-                    let applicationMode;
-                    let msecLeftToSpeak = 0;
+                    const data = JSON.parse(event.data); 
+                    let mainStreamManager; // the stream of the person in the center
+                    let applicationMode; // whether we are in round or normal mode
+                    let msecLeftToSpeak = 0; // how long current speaker has left
 
                     let speaksNow;
                     if (data.queue.length !== 0) {
-                        speaksNow = data.queue[0];
+                        speaksNow = data.queue[0]; // ID of currently speaking person who is always first in queue
+
+                        // look up the stream of the current speaker by their Id
                         mainStreamManager = this.getAllUsers().filter(el => App.getUserId(el) === speaksNow)[0];
                     }
 
+                    // if we are the center then unmute ourselves
                     if (this.userId === speaksNow) {
                         this.state.publisher.publishAudio(true);
                     } else {
@@ -186,6 +190,7 @@ class App extends Component {
                     }
 
                     if (event.type === 'signal:' + SIGNALS.UPDATE_QUEUE || data.queue.length === 0) {
+                        // If round is finished then switch back to normal mode
                         applicationMode = APPLICATION_MODE.NORMAL;
                     } else {
                         applicationMode = APPLICATION_MODE.ROUND;
@@ -310,28 +315,23 @@ class App extends Component {
         });
     }
 
-    render() {
-        const mySessionId = this.state.mySessionId;
-
-        return (
-            <div className="container">
-                {this.state.session === undefined ? (
+    renderStartSession() {
+         return <div className="container">
                     <div id="join">
                         <div id="join-dialog" className="jumbotron vertical-center">
-                            <h1> Join a video session </h1>
+                            <h1> Start circle </h1>
                             <form className="form-group" onSubmit={this.joinSession}>
-                                {App.isNewSession() &&
                                 <p>
-                                    <label> Session: </label>
+                                    <label> Name: </label>
                                     <input
                                         className="form-control"
                                         type="text"
                                         id="sessionId"
-                                        value={mySessionId}
+                                        value={this.state.mySessionId}
                                         onChange={this.handleChangeSessionId}
                                         required
                                     />
-                                </p>}
+                                </p>
                                 <Devices devices={this.state.devices}
                                          changeCamera={(e) => this.handleChangeCamera(e)}
                                          changeMicrophone={(e) => this.handleChangeMicrophone(e)}/>
@@ -340,10 +340,31 @@ class App extends Component {
                                 </p>
                             </form>
                         </div>
-                    </div>
-                ) : null}
+                    </div> 
+                </div>;
+    }
 
-                {this.state.publisher !== undefined && this.state.publisher.stream !== undefined ? (
+    renderJoinSession() {
+         return <div className="container">
+                    <div id="join">
+                        <div id="join-dialog" className="jumbotron vertical-center">
+                            <h1> Join circle {this.state.mySessionId}</h1>
+                            <form className="form-group" onSubmit={this.joinSession}>                           
+                                <Devices devices={this.state.devices}
+                                         changeCamera={(e) => this.handleChangeCamera(e)}
+                                         changeMicrophone={(e) => this.handleChangeMicrophone(e)}/>
+                                <p className="text-center">
+                                    <input className="btn btn-lg btn-success" name="commit" type="submit" value="JOIN"/>
+                                </p>
+                            </form>
+                        </div>
+                    </div> 
+                </div>;
+          
+    }
+
+    renderApp(){
+        return <div className="container">
                     <div id="session">
                         <ControlPanel userStream={this.state.publisher}
                                       mainStream={this.state.mainStreamManager}
@@ -355,25 +376,38 @@ class App extends Component {
                                       resetRoundTimerFunction={() => this.resetRoundTimer()}/>
                         <MainCircle streamManager={this.state.mainStreamManager}/>
                         <div id="session-header">
-                            <h1 id="session-title">{mySessionId}</h1>
+                            <h1 id="session-title">{this.state.mySessionId}</h1>
                         </div>
 
                         <div id="video-container" className="videoContainer">
                             {this.getAllUsers().map((sub, i) => (
-                                <UserVideoComponent key={i}
-                                                    nextInQueue={this.state.speakingQueue.length > 1 && this.state.speakingQueue[1] === App.getUserId(sub)}
-                                                    streamManager={this.state.mainStreamManager !== sub ? sub : undefined}
-                                                    tPosition={this.calculatePosition(i)}/>
+                                <UserVideo key={App.getUserId(sub)}
+                                           nextInQueue={this.state.speakingQueue.length > 1 && this.state.speakingQueue[1] === App.getUserId(sub)}
+                                           streamManager={this.state.mainStreamManager !== sub ? sub : undefined}
+                                           tPosition={this.calculatePosition(i)}/>
                             ))}
                         </div>
                     </div>
-                ) : null}
                 <Toolbar leaveSession={this.leaveSession}
                          changeMicrophoneStatus={this.changeMicrophoneStatus}
                          microphoneEnabled={this.state.microphoneEnabled}
                          microphoneIconEnabled={this.state.mainStreamManager !== this.state.publisher}/>
-            </div>
-        );
+            </div>;
+    }
+
+    render() {
+        if(this.state.session === undefined) {
+            if(App.isNewSession()) {
+                return this.renderStartSession();
+            } else {
+                return this.renderJoinSession();
+            }
+        } 
+        if(this.state.publisher !== undefined && this.state.publisher.stream !== undefined ){
+                return this.renderApp();
+        } 
+
+        return <div className="loading">LOADING...</div>;
     }
 
     calculatePosition(streamNum) {
@@ -393,7 +427,8 @@ class App extends Component {
      */
 
     getToken() {
-        return this.createSession(this.state.mySessionId).then((sessionId) => this.createToken(sessionId));
+        const circlesSessionsPrefix = "c_r_les1972-"; // so that other clients doesn't randomly connect to our sessions.
+        return this.createSession(circlesSessionsPrefix+this.state.mySessionId).then((sessionId) => this.createToken(sessionId));
     }
 
     createSession(sessionId) {
