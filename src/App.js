@@ -342,7 +342,6 @@ class App extends Component {
                 {this.state.publisher !== undefined && this.state.publisher.stream !== undefined ? (
                     <div id="session">
                         <ControlPanel userStream={this.state.publisher}
-                                      mainStream={this.state.mainStreamManager}
                                       speakingQueue={this.state.speakingQueue}
                                       applicationMode={this.state.applicationMode}
                                       allUsers={this.getAllUsers()}

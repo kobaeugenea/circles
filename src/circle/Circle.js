@@ -1,6 +1,7 @@
 import React, {Component} from 'react';
 import OpenViduVideoComponent from './OvVideo';
 import {MicOff} from "@material-ui/icons";
+import App from "../App";
 
 export default class Circle extends Component {
 
@@ -12,7 +13,8 @@ export default class Circle extends Component {
                             {!this.props.microphoneEnabled && <MicOff style={{color: 'red', fontSize: '3vh'}}/>}
                             <div className={'streamcomponent' + (this.props.nextInQueue ? ' nextInQueue' : '')}
                                  style={this.props.streamSize}>
-                                <OpenViduVideoComponent streamManager={this.props.streamManager}/>
+                                <OpenViduVideoComponent key={App.getUserId(this.props.streamManager)}
+                                                        streamManager={this.props.streamManager}/>
                             </div>
                         </div>
                     ) : <img style={{...this.props.streamSize, ...this.props.streamPosition}}
